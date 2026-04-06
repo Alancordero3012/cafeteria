@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>CafeteriaSystem.WPF</RootNamespace>
+    <AssemblyName>CafeteriaSystem.WPF</AssemblyName>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CafeteriaSystem.Domain\CafeteriaSystem.Domain.csproj" />
+    <ProjectReference Include="..\CafeteriaSystem.Application\CafeteriaSystem.Application.csproj" />
+    <ProjectReference Include="..\CafeteriaSystem.Infrastructure\CafeteriaSystem.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.1.0" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-rc5.4" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+    <PackageReference Include="QuestPDF" Version="2024.10.2" />
+    <PackageReference Include="ClosedXML" Version="0.102.2" />
+  </ItemGroup>
+</Project>

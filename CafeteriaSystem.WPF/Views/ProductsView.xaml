@@ -1,0 +1,67 @@
+<UserControl x:Class="CafeteriaSystem.WPF.Views.ProductsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Grid Margin="28,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="0,0,0,16">
+            <Grid Width="280" HorizontalAlignment="Left">
+                <materialDesign:PackIcon Kind="Magnify" Width="16" VerticalAlignment="Center" Margin="10,0,0,0"
+                                         Foreground="{StaticResource TextSecondaryBrush}" Panel.ZIndex="1"/>
+                <TextBox Style="{StaticResource SearchBoxStyle}" Padding="34,8,10,8" FontSize="13"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+        </Grid>
+        <Border Grid.Row="1" Style="{StaticResource CardStyle}" Padding="0">
+            <DataGrid Style="{StaticResource ModernDataGridStyle}" ItemsSource="{Binding Products}"
+                      SelectedItem="{Binding SelectedProduct}" AutoGenerateColumns="False"
+                      ColumnHeaderHeight="40" RowHeight="52">
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="{StaticResource BgElevatedBrush}"/>
+                        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+                        <Setter Property="FontSize" Value="12"/><Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="Padding" Value="16,0"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush2}"/>
+                        <Setter Property="SeparatorVisibility" Value="Hidden"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="NOMBRE"     Binding="{Binding Name}"                            Width="*">
+                        <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="16,0"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/></Style></DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="CATEGORÍA"  Binding="{Binding Category.Name}"                  Width="140">
+                        <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="16,0"/><Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/></Style></DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="PRECIO"     Binding="{Binding Price, StringFormat='RD${0:N2}'}" Width="110">
+                        <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="16,0"/><Setter Property="Foreground" Value="{StaticResource AccentCoffeeBrush}"/><Setter Property="FontWeight" Value="SemiBold"/></Style></DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="COSTO"      Binding="{Binding Cost, StringFormat='RD${0:N2}'}"  Width="110">
+                        <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="16,0"/><Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/></Style></DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="STOCK"      Binding="{Binding CurrentStock}"                   Width="90">
+                        <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="16,0"/><Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/></Style></DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="MÍNIMO"     Binding="{Binding MinimumStock}"                   Width="90">
+                        <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="16,0"/><Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/></Style></DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTemplateColumn Header="ACCIONES" Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource GhostButtonStyle}" Padding="8,4" Margin="8,0"
+                                        Command="{Binding DataContext.EditProductCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}">
+                                    <materialDesign:PackIcon Kind="Pencil" Width="14"/>
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+    </Grid>
+</UserControl>

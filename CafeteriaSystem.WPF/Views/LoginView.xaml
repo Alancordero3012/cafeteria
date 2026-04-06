@@ -1,0 +1,95 @@
+<UserControl x:Class="CafeteriaSystem.WPF.Views.LoginView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             Background="{StaticResource BgDeepBrush}">
+    <Grid>
+        <!-- Background gradient decoration -->
+        <Border>
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#FF0F0E17" Offset="0"/>
+                    <GradientStop Color="#FF1A1825" Offset="0.6"/>
+                    <GradientStop Color="#FF13111E" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+        <!-- Decorative circle -->
+        <Ellipse Width="600" Height="600" HorizontalAlignment="Right" VerticalAlignment="Top"
+                 Margin="0,-200,-200,0" Opacity="0.04" Fill="{StaticResource AccentCoffeeBrush}"/>
+        <Ellipse Width="400" Height="400" HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                 Margin="-150,0,0,-150" Opacity="0.05" Fill="{StaticResource AccentPurpleBrush}"/>
+
+        <!-- Login Card -->
+        <Border Width="420" HorizontalAlignment="Center" VerticalAlignment="Center"
+                Background="{StaticResource BgCardBrush}" CornerRadius="20"
+                BorderBrush="{StaticResource BorderBrush2}" BorderThickness="1">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="60" ShadowDepth="0" Color="#FF000000" Opacity="0.5"/>
+            </Border.Effect>
+            <StackPanel Margin="40">
+                <!-- Logo -->
+                <StackPanel HorizontalAlignment="Center" Margin="0,0,0,32">
+                    <Border Width="70" Height="70" CornerRadius="20" HorizontalAlignment="Center"
+                            Background="{StaticResource AccentCoffeeBrush}">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="#FFE8A87C" Opacity="0.5"/>
+                        </Border.Effect>
+                        <materialDesign:PackIcon Kind="Coffee" Width="40" Height="40" Foreground="#FF0F0E17"
+                                                 VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="CafeteriaSystem" FontSize="24" FontWeight="Bold"
+                               Foreground="{StaticResource TextPrimaryBrush}" HorizontalAlignment="Center" Margin="0,16,0,4"/>
+                    <TextBlock Text="Sistema de Punto de Venta" FontSize="13"
+                               Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Error -->
+                <Border Background="#33F44336" CornerRadius="8" Padding="12,8" Margin="0,0,0,16"
+                        Visibility="{Binding HasError, Converter={StaticResource BoolToVis}}">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="AlertCircle" Foreground="{StaticResource DangerBrush}" Width="18" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding ErrorText}" Foreground="{StaticResource DangerBrush}" Margin="8,0,0,0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Usuario -->
+                <TextBlock Text="Usuario" Style="{StaticResource LabelStyle}" Margin="0,0,0,6"/>
+                <TextBox x:Name="TxtUsername" Style="{StaticResource SearchBoxStyle}"
+                         Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="0,0,0,16"/>
+
+                <!-- Contraseña -->
+                <TextBlock Text="Contraseña" Style="{StaticResource LabelStyle}" Margin="0,0,0,6"/>
+                <PasswordBox x:Name="TxtPassword" Padding="12,10" FontSize="14"
+                             materialDesign:PasswordBoxAssist.Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Background="{StaticResource BgElevatedBrush}"
+                             Foreground="{StaticResource TextPrimaryBrush}"
+                             BorderBrush="{StaticResource BorderBrush2}"
+                             Margin="0,0,0,24"
+                             PasswordChanged="TxtPassword_PasswordChanged"/>
+
+                <!-- Login Button -->
+                <Button Style="{StaticResource PrimaryButtonStyle}" Command="{Binding LoginCommand}"
+                        FontSize="15" Height="46" IsEnabled="{Binding IsLoading, Converter={StaticResource BoolToVis}, ConverterParameter=Inverse}">
+                    <Grid>
+                        <TextBlock Text="Iniciar Sesión" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}, ConverterParameter=Inverse}" FontWeight="SemiBold"/>
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}">
+                            <materialDesign:PackIcon Kind="Loading" Width="18" Height="18">
+                                <materialDesign:PackIcon.RenderTransform>
+                                    <RotateTransform/>
+                                </materialDesign:PackIcon.RenderTransform>
+                            </materialDesign:PackIcon>
+                            <TextBlock Text="Verificando..." Margin="8,0,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </Button>
+
+                <!-- Hint -->
+                <TextBlock Text="Usuarios: admin / cajero | Contraseña: [usuario]123"
+                           FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"
+                           HorizontalAlignment="Center" Margin="0,20,0,0" TextAlignment="Center"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

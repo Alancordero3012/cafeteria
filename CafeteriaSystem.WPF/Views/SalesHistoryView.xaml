@@ -1,0 +1,91 @@
+<UserControl x:Class="CafeteriaSystem.WPF.Views.SalesHistoryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Grid Margin="28,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Filters -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,16">
+            <TextBlock Text="Desde:" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+            <DatePicker SelectedDate="{Binding FromDate}" Background="{StaticResource BgElevatedBrush}"
+                        Foreground="{StaticResource TextPrimaryBrush}" BorderBrush="{StaticResource BorderBrush2}" Width="140"/>
+            <TextBlock Text="Hasta:" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center" Margin="16,0,8,0"/>
+            <DatePicker SelectedDate="{Binding ToDate}" Background="{StaticResource BgElevatedBrush}"
+                        Foreground="{StaticResource TextPrimaryBrush}" BorderBrush="{StaticResource BorderBrush2}" Width="140"/>
+            <Button Style="{StaticResource PrimaryButtonStyle}" Command="{Binding LoadCommand}" Margin="12,0,0,0" Padding="16,8">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Filter" Width="16" VerticalAlignment="Center"/>
+                    <TextBlock Text="Filtrar" Margin="6,0,0,0"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+
+        <!-- Total -->
+        <Border Grid.Row="1" Style="{StaticResource CardStyle}" Margin="0,0,0,16" Padding="16,12">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="Receipt" Width="20" Foreground="{StaticResource AccentCoffeeBrush}" VerticalAlignment="Center"/>
+                <TextBlock Margin="8,0,0,0" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center">
+                    <Run Text="{Binding Sales.Count, Mode=OneWay}"/>
+                    <Run Text="ventas en el período —"/>
+                    <Run Text="Total:" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                    <Run Text="{Binding PeriodTotal, StringFormat='RD${0:N2}'}" FontWeight="Bold" Foreground="{StaticResource AccentCoffeeBrush}"/>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+
+        <!-- Table -->
+        <Border Grid.Row="2" Style="{StaticResource CardStyle}" Padding="0">
+            <DataGrid Style="{StaticResource ModernDataGridStyle}" ItemsSource="{Binding Sales}"
+                      SelectedItem="{Binding SelectedSale}" AutoGenerateColumns="False"
+                      ColumnHeaderHeight="40" RowHeight="52">
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="{StaticResource BgElevatedBrush}"/>
+                        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+                        <Setter Property="FontSize" Value="12"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="Padding" Value="16,0"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush2}"/>
+                        <Setter Property="SeparatorVisibility" Value="Hidden"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="# VENTA"    Binding="{Binding SaleNumber}" Width="120">
+                        <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="16,0"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="{StaticResource AccentCoffeeBrush}"/></Style></DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="FECHA"      Binding="{Binding SaleDate, StringFormat='dd/MM/yyyy HH:mm'}" Width="140">
+                        <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="16,0"/><Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/></Style></DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="CLIENTE"    Binding="{Binding Customer.Name}" Width="*">
+                        <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="16,0"/><Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/></Style></DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="MÉTODO"     Binding="{Binding PaymentMethod}" Width="110">
+                        <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="16,0"/><Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/></Style></DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="TOTAL"      Binding="{Binding Total, StringFormat='RD${0:N2}'}" Width="120">
+                        <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="16,0"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="Foreground" Value="{StaticResource AccentCoffeeBrush}"/></Style></DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="ESTADO"     Binding="{Binding Status}" Width="100">
+                        <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="16,0"/><Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/></Style></DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Loading -->
+        <Border Grid.RowSpan="4" Panel.ZIndex="10" Background="{StaticResource BgSurfaceBrush}"
+                Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <materialDesign:PackIcon Kind="Loading" Width="40" Height="40" Foreground="{StaticResource AccentCoffeeBrush}"/>
+                <TextBlock Text="Cargando ventas..." Margin="0,12,0,0" Foreground="{StaticResource TextSecondaryBrush}"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

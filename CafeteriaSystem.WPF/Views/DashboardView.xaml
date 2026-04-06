@@ -1,0 +1,150 @@
+<UserControl x:Class="CafeteriaSystem.WPF.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+             xmlns:lvcore="clr-namespace:LiveChartsCore.SkiaSharpView;assembly=LiveChartsCore.SkiaSharpView">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="28,24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Loading -->
+            <materialDesign:Card Grid.RowSpan="3" Panel.ZIndex="10" Background="{StaticResource BgSurfaceBrush}"
+                                 Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" Margin="-28,-24">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <materialDesign:PackIcon Kind="Loading" Width="48" Height="48" Foreground="{StaticResource AccentCoffeeBrush}"/>
+                    <TextBlock Text="Cargando datos..." Margin="0,12,0,0" Foreground="{StaticResource TextSecondaryBrush}"/>
+                </StackPanel>
+            </materialDesign:Card>
+
+            <!-- ══ ROW 1: KPI Cards ══ -->
+            <UniformGrid Grid.Row="0" Columns="4" Margin="0,0,0,20">
+                <!-- Ventas Hoy -->
+                <Border Style="{StaticResource KpiCardStyle}" Margin="0,0,12,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                            <Border Width="40" Height="40" CornerRadius="12" Background="#22E8A87C">
+                                <materialDesign:PackIcon Kind="CurrencyUsd" Width="22" Height="22" Foreground="{StaticResource AccentCoffeeBrush}"
+                                                         VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Border>
+                        </StackPanel>
+                        <TextBlock Grid.Row="1" Text="{Binding Dashboard.TotalVentasHoy, StringFormat='RD${0:N2}'}"
+                                   Style="{StaticResource ValueLargeStyle}" FontSize="26"/>
+                        <TextBlock Grid.Row="2" Text="Ventas Hoy" Style="{StaticResource LabelStyle}" Margin="0,4,0,0"/>
+                    </Grid>
+                </Border>
+                <!-- Ventas del Mes -->
+                <Border Style="{StaticResource KpiCardStyle}" Margin="0,0,12,0">
+                    <Grid>
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                        <Border Width="40" Height="40" CornerRadius="12" Background="#22AB47BC" Margin="0,0,0,12">
+                            <materialDesign:PackIcon Kind="TrendingUp" Width="22" Height="22" Foreground="#FFAB47BC"
+                                                     VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Grid.Row="1" Text="{Binding Dashboard.TotalVentasMes, StringFormat='RD${0:N2}'}" Style="{StaticResource ValueLargeStyle}" FontSize="26"/>
+                        <TextBlock Grid.Row="2" Text="Ventas del Mes" Style="{StaticResource LabelStyle}" Margin="0,4,0,0"/>
+                    </Grid>
+                </Border>
+                <!-- Órdenes Hoy -->
+                <Border Style="{StaticResource KpiCardStyle}" Margin="0,0,12,0">
+                    <Grid>
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                        <Border Width="40" Height="40" CornerRadius="12" Background="#224FC3F7" Margin="0,0,0,12">
+                            <materialDesign:PackIcon Kind="ShoppingCart" Width="22" Height="22" Foreground="{StaticResource AccentTealBrush}"
+                                                     VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Grid.Row="1" Text="{Binding Dashboard.TotalOrdenesHoy}" Style="{StaticResource ValueLargeStyle}" FontSize="26"/>
+                        <TextBlock Grid.Row="2" Text="Órdenes Hoy" Style="{StaticResource LabelStyle}" Margin="0,4,0,0"/>
+                    </Grid>
+                </Border>
+                <!-- Stock Bajo -->
+                <Border Style="{StaticResource KpiCardStyle}">
+                    <Grid>
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                        <Border Width="40" Height="40" CornerRadius="12" Background="#22F44336" Margin="0,0,0,12">
+                            <materialDesign:PackIcon Kind="AlertOutline" Width="22" Height="22" Foreground="{StaticResource DangerBrush}"
+                                                     VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Grid.Row="1" Text="{Binding Dashboard.ProductosStockBajo}" Style="{StaticResource ValueLargeStyle}" FontSize="26"
+                                   Foreground="{StaticResource DangerBrush}"/>
+                        <TextBlock Grid.Row="2" Text="Stock Bajo" Style="{StaticResource LabelStyle}" Margin="0,4,0,0"/>
+                    </Grid>
+                </Border>
+            </UniformGrid>
+
+            <!-- ══ ROW 2: Charts ══ -->
+            <Grid Grid.Row="1" Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Bar Chart: Ventas 7 días -->
+                <Border Grid.Column="0" Style="{StaticResource CardStyle}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="240"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Ventas Últimos 7 Días" Style="{StaticResource SectionTitleStyle}" Margin="0,0,0,16"/>
+                        <lvc:CartesianChart Grid.Row="1" Series="{Binding BarSeriesCollection}"
+                                            XAxes="{Binding BarXAxes}"
+                                            YAxes="{Binding BarYAxes}"
+                                            Background="Transparent"/>
+                    </Grid>
+                </Border>
+
+                <!-- Pie Chart: Por Categoría -->
+                <Border Grid.Column="2" Style="{StaticResource CardStyle}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="240"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Por Categoría" Style="{StaticResource SectionTitleStyle}" Margin="0,0,0,16"/>
+                        <lvc:PieChart Grid.Row="1" Series="{Binding PieSeriesCollection}" Background="Transparent" IsClockwise="True"/>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- ══ ROW 3: Top Productos ══ -->
+            <Border Grid.Row="2" Style="{StaticResource CardStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Top 5 Productos del Mes" Style="{StaticResource SectionTitleStyle}" Margin="0,0,0,16"/>
+                    <ItemsControl Grid.Row="1" ItemsSource="{Binding Dashboard.TopProductos}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="120"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Nombre}" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Cantidad, StringFormat='{}{0} und'}"
+                                               Foreground="{StaticResource TextSecondaryBrush}" Margin="16,0" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding Total, StringFormat='RD${0:N2}'}"
+                                               Foreground="{StaticResource AccentCoffeeBrush}" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

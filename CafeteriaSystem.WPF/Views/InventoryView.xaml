@@ -1,0 +1,136 @@
+<UserControl x:Class="CafeteriaSystem.WPF.Views.InventoryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Grid Margin="28,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Toolbar -->
+        <Grid Grid.Row="0" Margin="0,0,0,16">
+            <StackPanel Orientation="Horizontal">
+                <Grid Width="280">
+                    <materialDesign:PackIcon Kind="Magnify" Width="16" VerticalAlignment="Center" Margin="10,0,0,0"
+                                             Foreground="{StaticResource TextSecondaryBrush}" Panel.ZIndex="1"/>
+                    <TextBox Style="{StaticResource SearchBoxStyle}" Padding="34,8,10,8" FontSize="13"
+                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                             materialDesign:HintAssist.Hint="Buscar producto..."/>
+                </Grid>
+                <ComboBox Margin="12,0,0,0" Width="160" ItemsSource="{Binding Categories}"
+                          SelectedItem="{Binding SelectedCategory}"
+                          DisplayMemberPath="Name" Padding="10,8"
+                          Background="{StaticResource BgElevatedBrush}" Foreground="{StaticResource TextPrimaryBrush}"
+                          BorderBrush="{StaticResource BorderBrush2}"/>
+                <CheckBox Margin="16,0,0,0" Content="Solo stock bajo" Foreground="{StaticResource TextSecondaryBrush}"
+                          IsChecked="{Binding ShowLowStockOnly}" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Style="{StaticResource GhostButtonStyle}" Command="{Binding RefreshCommand}" Padding="12,8">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Refresh" Width="16" VerticalAlignment="Center"/>
+                        <TextBlock Text="Actualizar" Margin="6,0,0,0"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <!-- Summary bar -->
+        <Border Grid.Row="1" Style="{StaticResource CardStyle}" Margin="0,0,0,16" Padding="16,12">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="PackageVariant" Width="20" Foreground="{StaticResource AccentCoffeeBrush}" VerticalAlignment="Center"/>
+                <TextBlock Margin="8,0,0,0" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center">
+                    <Run Text="{Binding Products.Count, Mode=OneWay}"/>
+                    <Run Text="productos listados"/>
+                </TextBlock>
+                <Rectangle Width="1" Height="20" Fill="{StaticResource BorderBrush2}" Margin="16,0"/>
+                <materialDesign:PackIcon Kind="AlertOutline" Width="18" Foreground="{StaticResource DangerBrush}" VerticalAlignment="Center"/>
+                <TextBlock Margin="6,0,0,0" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center">
+                    <Run Text="{Binding Products.Count, Mode=OneWay}"/>
+                    <Run Text="con stock bajo" Foreground="{StaticResource DangerBrush}"/>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+
+        <!-- Data Grid -->
+        <Border Grid.Row="2" Style="{StaticResource CardStyle}" Padding="0">
+            <DataGrid Style="{StaticResource ModernDataGridStyle}" ItemsSource="{Binding Products}"
+                      SelectedItem="{Binding SelectedProduct}" AutoGenerateColumns="False"
+                      ColumnHeaderHeight="40" RowHeight="52">
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background"       Value="{StaticResource BgElevatedBrush}"/>
+                        <Setter Property="Foreground"       Value="{StaticResource TextSecondaryBrush}"/>
+                        <Setter Property="FontSize"         Value="12"/>
+                        <Setter Property="FontWeight"       Value="SemiBold"/>
+                        <Setter Property="Padding"          Value="16,0"/>
+                        <Setter Property="BorderThickness"  Value="0,0,0,1"/>
+                        <Setter Property="BorderBrush"      Value="{StaticResource BorderBrush2}"/>
+                        <Setter Property="SeparatorVisibility" Value="Hidden"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="PRODUCTO" Binding="{Binding Name}" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="Margin" Value="16,0"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="CATEGORÍA" Binding="{Binding Category.Name}" Width="140">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="Margin" Value="16,0"/>
+                                <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="PRECIO" Binding="{Binding Price, StringFormat='RD${0:N2}'}" Width="110">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="Margin" Value="16,0"/>
+                                <Setter Property="Foreground" Value="{StaticResource AccentCoffeeBrush}"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="COSTO" Binding="{Binding Cost, StringFormat='RD${0:N2}'}" Width="100">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="16,0"/><Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/></Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTemplateColumn Header="STOCK" Width="110">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel VerticalAlignment="Center" Margin="16,0">
+                                    <Border Style="{StaticResource BadgeDangerStyle}"
+                                            Visibility="{Binding HasLowStock, Converter={StaticResource BoolToVis}}"
+                                            HorizontalAlignment="Left">
+                                        <TextBlock Text="{Binding CurrentStock}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource DangerBrush}"/>
+                                    </Border>
+                                    <Border Style="{StaticResource BadgeSuccessStyle}"
+                                            Visibility="{Binding HasLowStock, Converter={StaticResource BoolToVis}, ConverterParameter=Inverse}"
+                                            HorizontalAlignment="Left">
+                                        <TextBlock Text="{Binding CurrentStock}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource SuccessBrush}"/>
+                                    </Border>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="UNIDAD" Binding="{Binding Unit}" Width="80">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="16,0"/><Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/></Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+    </Grid>
+</UserControl>
