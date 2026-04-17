@@ -52,6 +52,7 @@
                             <TextBlock Text="MENÚ PRINCIPAL" FontSize="10" FontWeight="SemiBold"
                                        Foreground="{StaticResource TextSecondaryBrush}" Margin="28,8,0,4"/>
 
+                            <!-- Dashboard: visible para todos -->
                             <Button Style="{StaticResource NavButtonActiveStyle}"
                                     Command="{Binding NavigateToDashboardCommand}"
                                     Visibility="{Binding IsDashboardActive, Converter={StaticResource BoolToVis}}">
@@ -69,6 +70,7 @@
                                 </StackPanel>
                             </Button>
 
+                            <!-- POS: visible para todos -->
                             <Button Style="{StaticResource NavButtonActiveStyle}"
                                     Command="{Binding NavigateToPOSCommand}"
                                     Visibility="{Binding IsPOSActive, Converter={StaticResource BoolToVis}}">
@@ -86,91 +88,105 @@
                                 </StackPanel>
                             </Button>
 
-                            <Button Style="{StaticResource NavButtonActiveStyle}"
-                                    Command="{Binding NavigateToInventoryCommand}"
-                                    Visibility="{Binding IsInventoryActive, Converter={StaticResource BoolToVis}}">
-                                <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="PackageVariant" Width="18" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Inventario" Margin="12,0,0,0" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Style="{StaticResource NavButtonStyle}"
-                                    Command="{Binding NavigateToInventoryCommand}"
-                                    Visibility="{Binding IsInventoryActive, Converter={StaticResource BoolToVis}, ConverterParameter=Inverse}">
-                                <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="PackageVariant" Width="18" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Inventario" Margin="12,0,0,0" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Button>
+                            <!-- Inventario: CanManageProducts -->
+                            <StackPanel Visibility="{Binding CurrentUser.CanManageProducts, Converter={StaticResource BoolToVis}}">
+                                <Button Style="{StaticResource NavButtonActiveStyle}"
+                                        Command="{Binding NavigateToInventoryCommand}"
+                                        Visibility="{Binding IsInventoryActive, Converter={StaticResource BoolToVis}}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="PackageVariant" Width="18" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Inventario" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Style="{StaticResource NavButtonStyle}"
+                                        Command="{Binding NavigateToInventoryCommand}"
+                                        Visibility="{Binding IsInventoryActive, Converter={StaticResource BoolToVis}, ConverterParameter=Inverse}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="PackageVariant" Width="18" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Inventario" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
 
-                            <Button Style="{StaticResource NavButtonActiveStyle}"
-                                    Command="{Binding NavigateToSalesCommand}"
-                                    Visibility="{Binding IsSalesActive, Converter={StaticResource BoolToVis}}">
-                                <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="History" Width="18" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Ventas" Margin="12,0,0,0" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Style="{StaticResource NavButtonStyle}"
-                                    Command="{Binding NavigateToSalesCommand}"
-                                    Visibility="{Binding IsSalesActive, Converter={StaticResource BoolToVis}, ConverterParameter=Inverse}">
-                                <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="History" Width="18" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Ventas" Margin="12,0,0,0" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Button>
+                            <!-- Ventas: CanCancelSales (tiene acceso a historial de ventas) -->
+                            <StackPanel Visibility="{Binding CurrentUser.CanCancelSales, Converter={StaticResource BoolToVis}}">
+                                <Button Style="{StaticResource NavButtonActiveStyle}"
+                                        Command="{Binding NavigateToSalesCommand}"
+                                        Visibility="{Binding IsSalesActive, Converter={StaticResource BoolToVis}}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="History" Width="18" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Ventas" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Style="{StaticResource NavButtonStyle}"
+                                        Command="{Binding NavigateToSalesCommand}"
+                                        Visibility="{Binding IsSalesActive, Converter={StaticResource BoolToVis}, ConverterParameter=Inverse}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="History" Width="18" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Ventas" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
 
-                            <Button Style="{StaticResource NavButtonActiveStyle}"
-                                    Command="{Binding NavigateToReportsCommand}"
-                                    Visibility="{Binding IsReportsActive, Converter={StaticResource BoolToVis}}">
-                                <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="ChartBar" Width="18" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Reportes" Margin="12,0,0,0" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Style="{StaticResource NavButtonStyle}"
-                                    Command="{Binding NavigateToReportsCommand}"
-                                    Visibility="{Binding IsReportsActive, Converter={StaticResource BoolToVis}, ConverterParameter=Inverse}">
-                                <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="ChartBar" Width="18" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Reportes" Margin="12,0,0,0" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Button>
+                            <!-- Reportes: CanViewReports -->
+                            <StackPanel Visibility="{Binding CurrentUser.CanViewReports, Converter={StaticResource BoolToVis}}">
+                                <Button Style="{StaticResource NavButtonActiveStyle}"
+                                        Command="{Binding NavigateToReportsCommand}"
+                                        Visibility="{Binding IsReportsActive, Converter={StaticResource BoolToVis}}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="ChartBar" Width="18" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Reportes" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Style="{StaticResource NavButtonStyle}"
+                                        Command="{Binding NavigateToReportsCommand}"
+                                        Visibility="{Binding IsReportsActive, Converter={StaticResource BoolToVis}, ConverterParameter=Inverse}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="ChartBar" Width="18" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Reportes" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
 
-                            <Button Style="{StaticResource NavButtonActiveStyle}"
-                                    Command="{Binding NavigateToProductsCommand}"
-                                    Visibility="{Binding IsProductsActive, Converter={StaticResource BoolToVis}}">
-                                <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="FoodVariant" Width="18" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Productos" Margin="12,0,0,0" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Style="{StaticResource NavButtonStyle}"
-                                    Command="{Binding NavigateToProductsCommand}"
-                                    Visibility="{Binding IsProductsActive, Converter={StaticResource BoolToVis}, ConverterParameter=Inverse}">
-                                <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="FoodVariant" Width="18" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Productos" Margin="12,0,0,0" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Button>
+                            <!-- Productos: CanManageProducts -->
+                            <StackPanel Visibility="{Binding CurrentUser.CanManageProducts, Converter={StaticResource BoolToVis}}">
+                                <Button Style="{StaticResource NavButtonActiveStyle}"
+                                        Command="{Binding NavigateToProductsCommand}"
+                                        Visibility="{Binding IsProductsActive, Converter={StaticResource BoolToVis}}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="FoodVariant" Width="18" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Productos" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Style="{StaticResource NavButtonStyle}"
+                                        Command="{Binding NavigateToProductsCommand}"
+                                        Visibility="{Binding IsProductsActive, Converter={StaticResource BoolToVis}, ConverterParameter=Inverse}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="FoodVariant" Width="18" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Productos" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
 
-                            <!-- Categorías -->
-                            <Button Style="{StaticResource NavButtonActiveStyle}"
-                                    Command="{Binding NavigateToCategoriesCommand}"
-                                    Visibility="{Binding IsCategoriesActive, Converter={StaticResource BoolToVis}}">
-                                <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="Tag" Width="18" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Categorías" Margin="12,0,0,0" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Style="{StaticResource NavButtonStyle}"
-                                    Command="{Binding NavigateToCategoriesCommand}"
-                                    Visibility="{Binding IsCategoriesActive, Converter={StaticResource BoolToVis}, ConverterParameter=Inverse}">
-                                <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="Tag" Width="18" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Categorías" Margin="12,0,0,0" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Button>
+                            <!-- Categorías: CanManageProducts -->
+                            <StackPanel Visibility="{Binding CurrentUser.CanManageProducts, Converter={StaticResource BoolToVis}}">
+                                <Button Style="{StaticResource NavButtonActiveStyle}"
+                                        Command="{Binding NavigateToCategoriesCommand}"
+                                        Visibility="{Binding IsCategoriesActive, Converter={StaticResource BoolToVis}}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="Tag" Width="18" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Categorías" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Style="{StaticResource NavButtonStyle}"
+                                        Command="{Binding NavigateToCategoriesCommand}"
+                                        Visibility="{Binding IsCategoriesActive, Converter={StaticResource BoolToVis}, ConverterParameter=Inverse}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="Tag" Width="18" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Categorías" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
 
