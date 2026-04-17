@@ -223,6 +223,21 @@
                         <TextBlock Text="Monto Recibido (RD$)" Style="{StaticResource LabelStyle}" Margin="0,0,0,4"/>
                         <TextBox Style="{StaticResource SearchBoxStyle}" FontSize="16" FontWeight="SemiBold"
                                  Text="{Binding AmountPaid, UpdateSourceTrigger=PropertyChanged, StringFormat='N2'}" Margin="0,0,0,6"/>
+
+                        <!-- Alerta: monto insuficiente -->
+                        <Border Background="#33F44336" CornerRadius="6" Padding="10,7" Margin="0,0,0,8"
+                                Visibility="{Binding InsufficientAmount, Converter={StaticResource BoolToVis}}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="AlertCircle" Foreground="{StaticResource DangerBrush}"
+                                                         Width="16" VerticalAlignment="Center"/>
+                                <TextBlock Margin="6,0,0,0" FontSize="12" Foreground="{StaticResource DangerBrush}"
+                                           VerticalAlignment="Center">
+                                    <Run Text="Monto insuficiente. Faltan:"/>
+                                    <Run Text="{Binding Shortage, StringFormat='RD${0:N2}'}" FontWeight="Bold"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
                         <Grid Margin="0,0,0,12">
                             <TextBlock Text="Cambio:" Foreground="{StaticResource TextSecondaryBrush}"/>
                             <TextBlock HorizontalAlignment="Right" Text="{Binding Change, StringFormat='RD${0:N2}'}"
@@ -240,6 +255,17 @@
                                 </StackPanel>
                             </StackPanel>
                         </Border>
+
+                        <!-- Cliente -->
+                        <TextBlock Text="Nombre del Cliente" Style="{StaticResource LabelStyle}" Margin="0,0,0,4"/>
+                        <Grid Margin="0,0,0,12">
+                            <materialDesign:PackIcon Kind="Account" Width="16" Height="16"
+                                                     VerticalAlignment="Center" Margin="10,0,0,0"
+                                                     Foreground="{StaticResource TextSecondaryBrush}" Panel.ZIndex="1"/>
+                            <TextBox Style="{StaticResource SearchBoxStyle}" Padding="34,8,12,8"
+                                     Text="{Binding CustomerName, UpdateSourceTrigger=PropertyChanged}"
+                                     materialDesign:HintAssist.Hint="Consumidor Final (opcional)"/>
+                        </Grid>
 
                         <!-- Cobrar Button -->
                         <Button Style="{StaticResource PrimaryButtonStyle}" Height="50" FontSize="16"

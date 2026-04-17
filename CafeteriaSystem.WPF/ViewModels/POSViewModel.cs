@@ -34,6 +34,9 @@ public partial class POSViewModel(
     [ObservableProperty] private int _cartItemCount;
     [ObservableProperty] private bool _saleSuccess;
     [ObservableProperty] private string _lastSaleNumber = string.Empty;
+    [ObservableProperty] private bool _insufficientAmount;
+    [ObservableProperty] private decimal _shortage;
+    [ObservableProperty] private string _customerName = string.Empty;
 
     private List<Product> _allProducts = [];
 
@@ -90,7 +93,7 @@ public partial class POSViewModel(
                 CategoryName = product.Category?.Name ?? "",
                 UnitPrice = product.Price,
                 Quantity = 1,
-                TaxPercent = (product.TaxRate?.Rate ?? 0.18m) * 100,
+                TaxPercent = product.AplicaItbis ? 18m : 0m,
             });
         }
         CalculateTotals();
@@ -121,7 +124,11 @@ public partial class POSViewModel(
     [RelayCommand]
     private void ClearCart() { CartItems.Clear(); CalculateTotals(); }
 
-    partial void OnAmountPaidChanged(decimal value) => Change = value - Total;
+    partial void OnAmountPaidChanged(decimal value)
+    {
+        Change = value - Total;
+        UpdateInsufficient();
+    }
     partial void OnManualDiscountPercentChanged(decimal value) => CalculateTotals();
 
     private void CalculateTotals()
@@ -134,6 +141,13 @@ public partial class POSViewModel(
         Total = Subtotal - DiscountAmount + TaxAmount;
         Change = AmountPaid - Total;
         CartItemCount = CartItems.Sum(i => i.Quantity);
+        UpdateInsufficient();
+    }
+
+    private void UpdateInsufficient()
+    {
+        Shortage = Total - AmountPaid;
+        InsufficientAmount = CartItems.Count > 0 && AmountPaid > 0 && AmountPaid < Total;
     }
 
     [RelayCommand]
@@ -151,7 +165,9 @@ public partial class POSViewModel(
             SelectedCustomer?.Id,
             SelectedPaymentMethod,
             AmountPaid,
-            ManualDiscountPercent);
+            paymentMethodId: null,
+            ManualDiscountPercent,
+            customerName: string.IsNullOrWhiteSpace(CustomerName) ? null : CustomerName);
         IsBusy = false;
 
         if (!result.Success) { StatusMessage = result.Message; return; }
@@ -161,6 +177,7 @@ public partial class POSViewModel(
         CartItems.Clear();
         AmountPaid = 0;
         ManualDiscountPercent = 0;
+        CustomerName = string.Empty;
         CalculateTotals();
         // Refresh stock display
         _allProducts = (await productRepository.GetActivesAsync()).ToList();

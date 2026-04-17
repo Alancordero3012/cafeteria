@@ -62,7 +62,6 @@
                 <!-- Contraseña -->
                 <TextBlock Text="Contraseña" Style="{StaticResource LabelStyle}" Margin="0,0,0,6"/>
                 <PasswordBox x:Name="TxtPassword" Padding="12,10" FontSize="14"
-                             materialDesign:PasswordBoxAssist.Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              Background="{StaticResource BgElevatedBrush}"
                              Foreground="{StaticResource TextPrimaryBrush}"
                              BorderBrush="{StaticResource BorderBrush2}"

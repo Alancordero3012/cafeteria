@@ -16,7 +16,9 @@ public class SaleService(
         int? customerId,
         PaymentMethod paymentMethod,
         decimal amountPaid,
-        decimal manualDiscountPercent = 0)
+        int? paymentMethodId = null,
+        decimal manualDiscountPercent = 0,
+        string? customerName = null)
     {
         if (cart.Count == 0)
             return (false, "El carrito está vacío.", null);
@@ -52,7 +54,7 @@ public class SaleService(
             SaleDate = DateTime.Now,
             UserId = userId,
             CustomerId = customerId,
-            PaymentMethod = paymentMethod,
+            PaymentMethodId = paymentMethodId,   // FK a Metodos_Pago
             Subtotal = subtotal,
             DiscountAmount = totalDiscount,
             TaxAmount = taxAmount,
@@ -60,14 +62,22 @@ public class SaleService(
             AmountPaid = paymentMethod == PaymentMethod.Efectivo ? amountPaid : total,
             Change = paymentMethod == PaymentMethod.Efectivo ? change : 0,
             Status = SaleStatus.Completada,
-            Details = cart.Select(i => new SaleDetail
+            Notes = customerName ?? string.Empty,
+            Details = cart.Select(i =>
             {
-                ProductId = i.ProductId,
-                ProductName = i.ProductName,
-                UnitPrice = i.UnitPrice,
-                Quantity = i.Quantity,
-                DiscountPercent = i.DiscountPercent,
-                TaxPercent = taxPercent * 100,
+                var lineDiscount = i.DiscountAmount;
+                var lineSubtotal = i.Subtotal - lineDiscount;
+                var lineTax = i.TaxPercent > 0 ? lineSubtotal * (i.TaxPercent / 100m) : 0m;
+                return new SaleDetail
+                {
+                    ProductId = i.ProductId,
+                    ProductName = i.ProductName,
+                    UnitPrice = i.UnitPrice,
+                    Quantity = i.Quantity,           // decimal en BD
+                    Discount = lineDiscount,          // monto fijo
+                    TaxAmount = lineTax,
+                    Subtotal = lineSubtotal + lineTax
+                };
             }).ToList()
         };
 
@@ -81,8 +91,8 @@ public class SaleService(
             {
                 ProductId = item.ProductId,
                 Date = DateTime.Now,
-                Type = KardexType.Salida,
-                Quantity = item.Quantity,
+                MovementType = "Salida",
+                Quantity = item.Quantity,            // decimal en BD
                 Reason = $"Venta #{savedSale.SaleNumber}",
                 ReferenceNumber = savedSale.SaleNumber,
                 UserId = userId,

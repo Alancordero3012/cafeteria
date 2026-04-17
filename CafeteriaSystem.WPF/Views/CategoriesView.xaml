@@ -1,0 +1,236 @@
+<UserControl x:Class="CafeteriaSystem.WPF.Views.CategoriesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:vm="clr-namespace:CafeteriaSystem.WPF.ViewModels">
+    <Grid Margin="28,20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ── LISTA ──────────────────────────────────────────────────────── -->
+        <Grid Grid.Column="0" Margin="0,0,16,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Toolbar -->
+            <Grid Grid.Row="0" Margin="0,0,0,16">
+                <TextBlock Text="Categorías" FontSize="20" FontWeight="Bold"
+                           Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                <Button HorizontalAlignment="Right" Style="{StaticResource PrimaryButtonStyle}" Padding="16,8"
+                        Command="{Binding NewCategoryCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Plus" Width="16" VerticalAlignment="Center"/>
+                        <TextBlock Text="Nueva Categoría" Margin="6,0,0,0" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <!-- Tabla -->
+            <Border Grid.Row="1" Style="{StaticResource CardStyle}" Padding="0">
+                <DataGrid Style="{StaticResource ModernDataGridStyle}" ItemsSource="{Binding Categories}"
+                          SelectedItem="{Binding SelectedCategory}" AutoGenerateColumns="False"
+                          ColumnHeaderHeight="40" RowHeight="56">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="{StaticResource BgElevatedBrush}"/>
+                            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+                            <Setter Property="FontSize" Value="12"/><Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="Padding" Value="16,0"/>
+                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush2}"/>
+                            <Setter Property="SeparatorVisibility" Value="Hidden"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.Columns>
+                        <!-- Color chip -->
+                        <DataGridTemplateColumn Header="COLOR" Width="80">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border Width="28" Height="28" CornerRadius="8" Margin="16,0"
+                                            HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding Color}"/>
+                                        </Border.Background>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="NOMBRE" Binding="{Binding Name}" Width="*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Margin" Value="16,0"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="DESCRIPCIÓN" Binding="{Binding Description}" Width="*">
+                            <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="16,0"/><Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/></Style></DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTemplateColumn Header="ACCIONES" Width="100">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0">
+                                        <Button Style="{StaticResource GhostButtonStyle}" Padding="6,4" ToolTip="Editar"
+                                                Command="{Binding DataContext.EditCategoryCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}">
+                                            <materialDesign:PackIcon Kind="Pencil" Width="14"/>
+                                        </Button>
+                                        <Button Style="{StaticResource GhostButtonStyle}" Padding="6,4" ToolTip="Desactivar"
+                                                Command="{Binding DataContext.DeleteCategoryCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}" Foreground="{StaticResource DangerBrush}">
+                                            <materialDesign:PackIcon Kind="TrashCan" Width="14"/>
+                                        </Button>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+        </Grid>
+
+        <!-- ── FORMULARIO lateral ─────────────────────────────────────────── -->
+        <Border Grid.Column="1" Width="360" Style="{StaticResource CardStyle}" Padding="0"
+                Margin="0,0,0,0" ClipToBounds="True"
+                Visibility="{Binding IsEditing, Converter={StaticResource BoolToVis}}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <Border Grid.Row="0" Background="{StaticResource BgElevatedBrush}" Padding="20,16"
+                        BorderThickness="0,0,0,1" BorderBrush="{StaticResource BorderBrush2}">
+                    <Grid>
+                        <TextBlock Text="{Binding FormTitle}" FontSize="15" FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                        <Button Style="{StaticResource GhostButtonStyle}" HorizontalAlignment="Right"
+                                Command="{Binding CancelEditCommand}" Padding="4">
+                            <materialDesign:PackIcon Kind="Close" Width="16"/>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- Campos -->
+                <ScrollViewer Grid.Row="1" Padding="20,16" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <!-- Preview del color -->
+                        <Border Height="60" CornerRadius="10" Margin="0,0,0,16">
+                            <Border.Background>
+                                <SolidColorBrush Color="{Binding EditColor}"/>
+                            </Border.Background>
+                            <TextBlock Text="{Binding EditName}" FontSize="16" FontWeight="Bold"
+                                       Foreground="White" HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" Opacity="0.9"/>
+                        </Border>
+
+                        <!-- Nombre -->
+                        <TextBlock Text="Nombre *" FontSize="11" FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                        <TextBox Style="{StaticResource SearchBoxStyle}" Padding="12,8"
+                                 Text="{Binding EditName, UpdateSourceTrigger=PropertyChanged}"
+                                 materialDesign:HintAssist.Hint="Nombre de la categoría"/>
+
+                        <!-- Descripción -->
+                        <TextBlock Text="Descripción" FontSize="11" FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextSecondaryBrush}" Margin="0,14,0,6"/>
+                        <TextBox Style="{StaticResource SearchBoxStyle}" Padding="12,8"
+                                 Text="{Binding EditDescription, UpdateSourceTrigger=PropertyChanged}"
+                                 materialDesign:HintAssist.Hint="Descripción opcional"/>
+
+                        <!-- Selector de color -->
+                        <TextBlock Text="Color en Dashboard" FontSize="11" FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextSecondaryBrush}" Margin="0,14,0,8"/>
+                        <ItemsControl ItemsSource="{Binding Source={x:Static vm:CategoriesViewModel.ColorPalette}}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Margin="4" Padding="0" Width="32" Height="32"
+                                            Command="{Binding DataContext.SelectColorCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"
+                                            ToolTip="{Binding}"
+                                            BorderThickness="0" Cursor="Hand">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border CornerRadius="8" Width="32" Height="32">
+                                                    <Border.Background>
+                                                        <SolidColorBrush Color="{Binding}"/>
+                                                    </Border.Background>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Opacity" Value="0.8"/>
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- Hex manual -->
+                        <TextBlock Text="Hex personalizado" FontSize="11" FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextSecondaryBrush}" Margin="0,12,0,6"/>
+                        <TextBox Style="{StaticResource SearchBoxStyle}" Padding="12,8"
+                                 Text="{Binding EditColor, UpdateSourceTrigger=PropertyChanged}"
+                                 materialDesign:HintAssist.Hint="#RRGGBB"/>
+
+                        <!-- Activo -->
+                        <CheckBox Content="Activo" IsChecked="{Binding EditIsActive}"
+                                  Foreground="{StaticResource TextSecondaryBrush}" Margin="0,14,0,0"/>
+
+                        <!-- Estado -->
+                        <TextBlock Foreground="{StaticResource AccentCoffeeBrush}" FontSize="12"
+                                   Margin="0,10,0,0" Text="{Binding StatusMessage}" TextWrapping="Wrap">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding StatusMessage}" Value="">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- Botones -->
+                <Border Grid.Row="2" Background="{StaticResource BgElevatedBrush}" Padding="20,14"
+                        BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderBrush2}">
+                    <Grid>
+                        <Button Style="{StaticResource GhostButtonStyle}" HorizontalAlignment="Left"
+                                Command="{Binding CancelEditCommand}" Padding="14,8">
+                            <TextBlock Text="Cancelar"/>
+                        </Button>
+                        <Button Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Right"
+                                Command="{Binding SaveCategoryCommand}" Padding="20,8">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="ContentSave" Width="16" VerticalAlignment="Center"/>
+                                <TextBlock Text="Guardar" Margin="6,0,0,0" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

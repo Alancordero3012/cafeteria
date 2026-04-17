@@ -9,6 +9,12 @@
     <ProjectReference Include="..\CafeteriaSystem.Application\CafeteriaSystem.Application.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+  </ItemGroup>
+  <!-- Excluir repositorios Mock (reemplazados por EF Core) -->
+  <ItemGroup>
+    <Compile Remove="MockData\**" />
+    <Compile Remove="Repositories\Mock*.cs" />
   </ItemGroup>
 </Project>

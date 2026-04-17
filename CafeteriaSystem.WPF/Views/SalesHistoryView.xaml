@@ -69,12 +69,34 @@
                     <DataGridTextColumn Header="MÉTODO"     Binding="{Binding PaymentMethod}" Width="110">
                         <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="16,0"/><Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/></Style></DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="TOTAL"      Binding="{Binding Total, StringFormat='RD${0:N2}'}" Width="120">
+                    <DataGridTextColumn Header="TOTAL"      Binding="{Binding Total, StringFormat='RD${0:N2}'}" Width="160">
                         <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="16,0"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="Foreground" Value="{StaticResource AccentCoffeeBrush}"/></Style></DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="ESTADO"     Binding="{Binding Status}" Width="100">
+                    <DataGridTextColumn Header="ESTADO"     Binding="{Binding Status}" Width="140">
                         <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="16,0"/><Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/></Style></DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
+
+                    <!-- Acciones -->
+                    <DataGridTemplateColumn Header="ACCIONES" Width="110">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0">
+                                    <Button Style="{StaticResource GhostButtonStyle}" Padding="6,4"
+                                            ToolTip="Ver Recibo"
+                                            Command="{Binding DataContext.ViewReceiptCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}">
+                                        <materialDesign:PackIcon Kind="Eye" Width="16"/>
+                                    </Button>
+                                    <Button Style="{StaticResource GhostButtonStyle}" Padding="6,4"
+                                            ToolTip="Guardar PDF"
+                                            Command="{Binding DataContext.SaveReceiptCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}">
+                                        <materialDesign:PackIcon Kind="FilePdfBox" Width="16" Foreground="{StaticResource DangerBrush}"/>
+                                    </Button>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </Border>

@@ -1,6 +1,7 @@
 using CafeteriaSystem.Application.Services;
 using CafeteriaSystem.Infrastructure;
 using CafeteriaSystem.WPF.ViewModels;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using QuestPDF.Infrastructure;
@@ -17,13 +18,19 @@ public partial class App : System.Windows.Application
         QuestPDF.Settings.License = LicenseType.Community;
 
         _host = Host.CreateDefaultBuilder()
-            .ConfigureServices(services =>
+            .ConfigureAppConfiguration((ctx, cfg) =>
             {
-                // Infrastructure (includes Application via AddApplication())
-                services.AddInfrastructure();
+                cfg.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            })
+            .ConfigureServices((ctx, services) =>
+            {
+                // Infrastructure + SQL Server (includes Application via AddApplication())
+                services.AddInfrastructure(ctx.Configuration);
 
                 // Auth as singleton so session persists
                 services.AddSingleton<AuthService>();
+                services.AddScoped<ActivityLogService>();
+                services.AddScoped<ReceiptService>();
 
                 // ViewModels
                 services.AddSingleton<LoginViewModel>();
@@ -34,6 +41,7 @@ public partial class App : System.Windows.Application
                 services.AddTransient<SalesHistoryViewModel>();
                 services.AddTransient<ReportsViewModel>();
                 services.AddTransient<ProductsViewModel>();
+                services.AddTransient<CategoriesViewModel>();
 
                 // Main window
                 services.AddSingleton<MainWindow>();

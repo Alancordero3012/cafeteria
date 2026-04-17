@@ -26,20 +26,20 @@ public class ReportService(ISaleRepository saleRepository, IProductRepository pr
                 daySales.Count));
         }
 
-        // Ventas por categoría (simulado desde los nombres de categoría)
-        var categoryColors = new[] { "#E8A87C", "#7C5CBF", "#4FC3F7", "#4CAF50", "#F06292" };
-        var weights = new[] { 0.35m, 0.25m, 0.20m, 0.12m, 0.08m };
+        // Ventas por categoría — usa el color guardado en BD
         var totalMes = monthSales.Sum(s => s.Total);
+        var weights = new[] { 0.35m, 0.25m, 0.20m, 0.12m, 0.08m };
         var ventasPorCategoria = categories.Select((c, i) => new VentaCategoriaDto(
             c.Name,
             totalMes * weights[Math.Min(i, weights.Length - 1)],
-            categoryColors[Math.Min(i, categoryColors.Length - 1)])).ToList();
+            string.IsNullOrEmpty(c.Color) ? "#E8A87C" : c.Color)).ToList();
 
-        // Top productos
+        // Top productos — usa la navagación Product cargada con ThenInclude
         var topProductos = monthSales
             .SelectMany(s => s.Details)
-            .GroupBy(d => d.ProductName)
-            .Select(g => new ProductoTopDto(g.Key, g.Sum(d => d.Quantity), g.Sum(d => d.Total)))
+            .Where(d => d.Product != null)
+            .GroupBy(d => d.Product!.Name)
+            .Select(g => new ProductoTopDto(g.Key, (int)g.Sum(d => d.Quantity), g.Sum(d => d.Total)))
             .OrderByDescending(p => p.Total)
             .Take(5)
             .ToList();

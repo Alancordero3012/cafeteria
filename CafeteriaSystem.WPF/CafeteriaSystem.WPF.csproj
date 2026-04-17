@@ -22,4 +22,9 @@
     <PackageReference Include="QuestPDF" Version="2024.10.2" />
     <PackageReference Include="ClosedXML" Version="0.102.2" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

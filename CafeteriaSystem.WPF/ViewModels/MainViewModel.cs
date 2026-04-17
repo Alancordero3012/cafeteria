@@ -24,6 +24,7 @@ public partial class MainViewModel : BaseViewModel
     [ObservableProperty] private bool _isSalesActive;
     [ObservableProperty] private bool _isReportsActive;
     [ObservableProperty] private bool _isProductsActive;
+    [ObservableProperty] private bool _isCategoriesActive;
 
     public MainViewModel(IServiceProvider serviceProvider, AuthService authService, LoginViewModel loginViewModel)
     {
@@ -40,7 +41,7 @@ public partial class MainViewModel : BaseViewModel
         NavigateToDashboard();
     }
 
-    private void ClearActiveState() { IsDashboardActive = IsPOSActive = IsInventoryActive = IsSalesActive = IsReportsActive = IsProductsActive = false; }
+    private void ClearActiveState() { IsDashboardActive = IsPOSActive = IsInventoryActive = IsSalesActive = IsReportsActive = IsProductsActive = IsCategoriesActive = false; }
 
     [RelayCommand]
     private async Task NavigateToDashboard()
@@ -92,6 +93,15 @@ public partial class MainViewModel : BaseViewModel
     {
         ClearActiveState(); IsProductsActive = true; ActiveSection = "Productos";
         var vm = _serviceProvider.GetRequiredService<ProductsViewModel>();
+        await vm.OnNavigatedToAsync();
+        CurrentViewModel = vm;
+    }
+
+    [RelayCommand]
+    private async Task NavigateToCategories()
+    {
+        ClearActiveState(); IsCategoriesActive = true; ActiveSection = "Categorías";
+        var vm = _serviceProvider.GetRequiredService<CategoriesViewModel>();
         await vm.OnNavigatedToAsync();
         CurrentViewModel = vm;
     }
